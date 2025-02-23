@@ -1,0 +1,24 @@
+- name: Install slurmd package
+  apt:
+    name: slurmd
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Deploy slurm.conf template
+  template:
+    src: slurm.conf.j2
+    dest: /etc/slurm/slurm.conf
+  become: yes
+
+- name: Copy slurmd systemd service file
+  copy:
+    src: slurmd.service
+    dest: /usr/lib/systemd/system/slurmd.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+  notify:
+    - Reload systemd daemon
+    - Restart slurmd

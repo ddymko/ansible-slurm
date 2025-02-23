@@ -1,0 +1,27 @@
+- name: Install slurmdbd package
+  apt:
+    name: slurmdbd
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Deploy slurmdbd.conf template
+  template:
+    src: slurmdbd.conf.j2
+    dest: /etc/slurm/slurmdbd.conf
+    owner: slurm
+    group: slurm
+    mode: '0600'
+  become: yes
+
+- name: Copy slurmdbd systemd service file
+  copy:
+    src: slurmdbd.service
+    dest: /usr/lib/systemd/system/slurmdbd.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+  notify:
+    - Reload systemd daemon
+    - Restart slurmdbd

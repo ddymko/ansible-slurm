@@ -1,0 +1,9 @@
+- name: Install required packages
+  apt:
+    name:
+      - libpmix-dev
+      - python3-mysqldb
+#      - jq
+    state: present
+    update_cache: yes
+  become: yes

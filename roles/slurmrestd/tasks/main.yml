@@ -1,0 +1,42 @@
+- name: Install slurmrestd package
+  apt:
+    name: slurmrestd
+    state: present
+    update_cache: yes
+  become: yes
+
+#- name: Ensure /run/slurmrestd directory exists
+#  file:
+#    path: /run/slurmrestd
+#    state: directory
+#    owner: slurm
+#    group: slurm
+#    mode: '0755'
+#  become: yes
+
+- name: Deploy systemd-tmpfiles configuration for slurmrestd
+  copy:
+    content: |
+      # Create /run/slurmrestd with mode 0755 owned by slurm:slurm if it doesn't exist
+      d /run/slurmrestd 0755 slurm slurm -
+    dest: /etc/tmpfiles.d/slurmrestd.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+
+- name: Apply systemd-tmpfiles configuration immediately
+  command: systemd-tmpfiles --create /etc/tmpfiles.d/slurmrestd.conf
+  become: yes
+
+- name: Copy slurmrestd systemd service file
+  copy:
+    src: slurmrestd.service
+    dest: /usr/lib/systemd/system/slurmrestd.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+  notify:
+    - Reload systemd daemon
+    - Restart slurmrestd

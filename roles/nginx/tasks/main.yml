@@ -1,0 +1,72 @@
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Deploy slurmrestd nginx configuration template
+  template:
+    src: slurmrestd.conf.j2
+    dest: /etc/nginx/sites-available/slurmrestd.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+  notify:
+    - Reload nginx
+
+- name: Change Nginx worker user from www-data to root in nginx.conf
+  lineinfile:
+    path: /etc/nginx/nginx.conf
+    regexp: '^user\s+www-data;'
+    line: 'user root;'
+  become: yes
+  notify:
+    - Reload nginx
+
+- name: Create symlink for slurmrestd.conf in sites-enabled
+  file:
+    src: /etc/nginx/sites-available/slurmrestd.conf
+    dest: /etc/nginx/sites-enabled/slurmrestd.conf
+    state: link
+  become: yes
+  notify:
+    - Reload nginx
+
+# ➜ Add Grafana Reverse Proxy Configuration for Iframe Embedding
+- name: Deploy Grafana Nginx reverse proxy configuration
+  copy:
+    dest: /etc/nginx/sites-available/grafana
+    content: |
+      server {
+          listen 8080;
+          server_name _; # Uses raw IP for access
+
+          location / {
+              proxy_pass http://127.0.0.1:3000;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+
+              # Allow iframe embedding
+              add_header X-Frame-Options "ALLOWALL" always;
+              add_header Content-Security-Policy "frame-ancestors *;" always;
+              add_header Access-Control-Allow-Origin *;
+              add_header Access-Control-Allow-Methods "GET, POST, OPTIONS";
+              add_header Access-Control-Allow-Headers "Origin, Content-Type, Accept, Authorization";
+          }
+      }
+  become: yes
+  notify:
+    - Reload nginx
+
+- name: Create symlink for Grafana in sites-enabled
+  file:
+    src: /etc/nginx/sites-available/grafana
+    dest: /etc/nginx/sites-enabled/grafana
+    state: link
+  become: yes
+  notify:
+    - Reload nginx

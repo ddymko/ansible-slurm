@@ -1,0 +1,39 @@
+- name: Create Prometheus data directory
+  file:
+    path: /opt/prometheus
+    state: directory
+    mode: "0755"
+
+- name: Copy Prometheus configuration file
+  copy:
+    src: files/prometheus.yml
+    dest: /opt/prometheus/prometheus.yml
+    mode: "0644"
+
+- name: Pull Prometheus Docker image
+  community.docker.docker_image:
+    name: prom/prometheus:latest
+    source: pull
+
+- name: Check if Prometheus container exists
+  community.docker.docker_container_info:
+    name: prometheus
+  register: prometheus_info
+
+- name: Stop and remove existing Prometheus container if running
+  community.docker.docker_container:
+    name: prometheus
+    state: absent
+  when: prometheus_info.exists
+
+- name: Run Prometheus container
+  community.docker.docker_container:
+    name: prometheus
+    image: prom/prometheus:latest
+    restart_policy: always
+    state: started
+    ports:
+      - "9090:9090"
+    volumes:
+      - "/opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro"
+      - "prometheus_data:/prometheus"

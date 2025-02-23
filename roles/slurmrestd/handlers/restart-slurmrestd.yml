@@ -1,0 +1,5 @@
+  - name: Restart slurmrestd
+    service:
+      name: slurmrestd
+      state: restarted
+    become: yes

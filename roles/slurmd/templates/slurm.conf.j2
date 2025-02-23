@@ -1,0 +1,68 @@
+ClusterName=HomeLab
+SlurmctldHost={{ ansible_hostname }}
+
+# AUTH
+AuthType=auth/munge
+
+# PROCESS TRACKING
+ProctrackType=proctrack/linuxproc
+
+# CORE FILES
+SlurmUser=slurm
+SlurmdSpoolDir=/var/lib/slurm/slurmd
+SlurmdPort=6818
+SlurmdPidFile=/run/slurmd.pid
+
+SlurmctldPort=6817
+SlurmctldPidFile=/run/slurmctld.pid
+
+StateSaveLocation=/var/lib/slurm/slurmctld
+
+#SwitchType=switch/none
+TaskPlugin=task/affinity
+#TaskPlugin=task/none
+#MpiDefault=none
+#ReturnToService=2
+
+# LOGGING
+SlurmdDebug=info
+SlurmdLogFile=/var/log/slurm/slurmd.log
+
+SlurmctldDebug=info
+SlurmctldLogFile=/var/log/slurm/slurmctld.log
+
+#This will logs job completions
+#we can set this to filetxt or mysql
+#JobCompType:jobcomp/none
+
+
+# TIMERS
+InactiveLimit=0
+KillWait=30
+MinJobAge=300
+SlurmctldTimeout=120
+SlurmdTimeout=300
+Waittime=0
+
+# SCHEDULING
+SchedulerType=sched/backfill
+SelectType=select/cons_tres
+SelectTypeParameters=CR_Core
+
+
+# SLURMDBD ACCOUNTING
+AccountingStorageType=accounting_storage/slurmdbd
+AccountingStorageHost={{ ansible_hostname }}
+AccountingStoreFlags=job_comment,job_env,job_script
+
+# GATHER JOB ACCOUNT DATA
+JobAcctGatherType=jobacct_gather/linux
+JobAcctGatherFrequency=30
+
+#  Node Definitions
+NodeName={{ ansible_hostname }} CPUs=4 RealMemory=3195 State=IDLE
+{#NodeName=slurm-test-worker CPUs=4 RealMemory=3195 State=IDLE#}
+{#NodeName=swn1 CPUs=1 RealMemory=1968 State=IDLE#}
+{#NodeName=swn2 CPUs=2 RealMemory=1967 State=IDLE#}
+{#NodeName=swn3 CPUs=4 RealMemory=3195 State=IDLE#}
+PartitionName=LocalQ Nodes=ALL Default=YES MaxTime=INFINITE State=UP

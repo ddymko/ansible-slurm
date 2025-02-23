@@ -1,0 +1,19 @@
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/{{ os_distro }}/gpg
+    state: present
+    keyring: /etc/apt/keyrings/docker.gpg
+
+- name:  Add Docker source
+  apt_repository:
+    repo:  "deb [arch={{ os_arch }} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/{{ os_distro }} {{ ansible_distribution_release | lower }} stable"
+    filename: docker
+    state: present
+    update_cache: yes
+
+
+- name: Update apt and install docker-ce
+  apt:
+    name: docker-ce
+    state: latest
+    update_cache: true

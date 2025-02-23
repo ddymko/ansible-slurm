@@ -1,0 +1,16 @@
+- name: Configure nodes with the munge role
+  hosts: control-node
+  become: yes
+  roles:
+#    - common
+#    - munge
+#    - mariadb
+#    - slurmdbd
+#    - slurmctl
+#    - slurmd
+#    - slurmrestd
+#    - nginx
+    - role: docker
+      vars:
+        perform_docker_setup: true
+        perform_node_exporter_setup: true

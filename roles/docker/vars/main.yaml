@@ -1,0 +1,4 @@
+---
+node_exporter_tag: "v1.8.2"
+docker_ce_version: "5:27.3.1-1~debian.12~bookworm" 
+node_exporter_image: "quay.io/prometheus/node-exporter"

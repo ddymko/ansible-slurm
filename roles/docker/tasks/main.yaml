@@ -1,0 +1,12 @@
+---
+- include_tasks: docker-ce.yaml
+  when: perform_docker_setup
+
+- include_tasks: node-exporter.yaml
+  when: perform_node_exporter_setup
+
+- include_tasks: prometheus.yaml
+#  when: perform_prometheus_setup
+
+- include_tasks: grafana.yaml
+#  when: perform_grafana_setup

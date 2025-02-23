@@ -1,0 +1,27 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  become: yes
+
+- name: Install munge and libmunge-dev packages
+  apt:
+    name:
+      - munge
+      - libmunge-dev
+    state: present
+  become: yes
+
+- name: Create munge key if missing
+  command: /usr/sbin/mungekey
+  args:
+    creates: /etc/munge/munge.key
+  become: yes
+
+- name: Ensure munge key file is secure
+  file:
+    path: /etc/munge/munge.key
+    owner: munge
+    group: munge
+    mode: '0400'
+  become: yes

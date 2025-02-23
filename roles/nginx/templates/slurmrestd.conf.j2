@@ -1,0 +1,21 @@
+# Define an upstream pointing to the UNIX socket
+upstream slurmrestd {
+    server unix:/run/slurmrestd/slurmrestd.socket;
+}
+
+server {
+    # Listen on port 80 (HTTP) or 443 (HTTPS + TLS config)
+    listen 80;
+    server_name {{ ansible_default_ipv4.address }};
+
+    location / {
+        # Pass all requests to our upstream
+        proxy_pass http://slurmrestd;
+
+        # If Slurm expects Host headers, pass them along
+        proxy_set_header Host $host;
+
+        # If Slurm REST requires certain auth or user headers, set them or allow them here
+        # e.g., proxy_set_header X-SLURM-USER-NAME ddymko;
+    }
+}

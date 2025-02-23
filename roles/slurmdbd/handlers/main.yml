@@ -1,0 +1,2 @@
+- import_tasks: system-daemon-reload.yml
+- import_tasks: restart-slurmdbd.yml

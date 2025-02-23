@@ -1,0 +1,72 @@
+- name: Install mariadb-server
+  apt:
+    name: mariadb-server
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Copy debian.cnf file to /etc/mysql
+  copy:
+    src: debian.cnf
+    dest: /etc/mysql/debian.cnf
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+
+- name: Set MariaDB bind-address to 0.0.0.0
+  ini_file:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    section: mysqld
+    option: bind-address
+    value: "0.0.0.0"
+  become: yes
+
+- name: Set innodb_buffer_pool_size to 2G
+  ini_file:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    section: mysqld
+    option: innodb_buffer_pool_size
+    value: "2G"
+  become: yes
+
+- name: Set innodb_lock_wait_timeout to 900
+  ini_file:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    section: mysqld
+    option: innodb_lock_wait_timeout
+    value: "900"
+  become: yes
+
+- name: Set innodb_log_file_size to 64M
+  ini_file:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    section: mysqld
+    option: innodb_log_file_size
+    value: "64M"
+  become: yes
+
+- name: Restart MariaDB
+  service:
+    name: mariadb
+    state: restarted
+  become: yes
+
+- name: Create slurm_acct_db database
+  mysql_db:
+    name: slurm_acct_db
+    state: present
+    login_user: root
+    login_password: "your_password"
+  become: yes
+
+- name: Create 'slurm' user and grant privileges on slurm_acct_db
+  mysql_user:
+    name: slurm
+    host: '%'
+    password: "redrum1212"
+    priv: "slurm_acct_db.*:ALL"
+    state: present
+    login_user: root
+    login_password: "your_password"
+  become: yes

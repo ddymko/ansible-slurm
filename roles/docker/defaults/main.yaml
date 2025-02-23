@@ -1,0 +1,4 @@
+# roles/docker/defaults/main.yml
+---
+os_distro: "{{ ansible_distribution | lower }}"  # This will give 'ubuntu', 'debian', etc.
+os_arch: "{{ ansible_architecture | replace('x86_64', 'amd64') | replace('aarch64', 'arm64') }}"

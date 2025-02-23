@@ -1,0 +1,6 @@
+- name: Install slurmd package
+  apt:
+    name: slurmctld
+    state: present
+    update_cache: yes
+  become: yes

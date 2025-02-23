@@ -1,0 +1,35 @@
+- name: Pull default Docker image
+  community.docker.docker_image:
+    name: "{{ node_exporter_image }}:{{ node_exporter_tag }}"
+    source: pull
+
+- name: Check if Node Exporter container exists
+  community.docker.docker_container_info:
+    name: node_exporter
+  register: node_exporter_info
+
+- name: Stop existing Node Exporter container if running
+  community.docker.docker_container:
+      name: node_exporter
+      state: stopped
+  when: node_exporter_info.exists
+
+- name: Remove existing Node Exporter container
+  community.docker.docker_container:
+    name: node_exporter
+    state: absent
+  when: node_exporter_info.exists
+
+- name: Run Prometheus Node Exporter
+  community.docker.docker_container:
+    name: node_exporter
+    image: "{{ node_exporter_image }}:{{ node_exporter_tag }}"
+    state: started
+    detach: true
+    network_mode: host
+    pid_mode: host
+    volumes:
+      - "/:/host:ro,rslave"
+    command: --path.rootfs=/host
+    restart: true
+    restart_policy: "always"
