@@ -1,2 +1,2 @@
-./roles/ssh-key/files/private-key
-./roles/ssh-key/files/public-key
+roles/ssh-key/files/private-key
+roles/ssh-key/files/public-key
