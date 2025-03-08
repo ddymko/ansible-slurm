@@ -1,0 +1,5 @@
+- name: Restart Conclave Backend
+  service:
+    name: conclave-backend
+    state: restarted
+  become: yes

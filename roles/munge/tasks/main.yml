@@ -17,6 +17,13 @@
   args:
     creates: /etc/munge/munge.key
   become: yes
+  when: create_key
+
+- name: Copy munge key using SCP (non-idempotent)
+  command: scp -o StrictHostKeyChecking=no /path/to/munge.key root@{{ inventory_hostname }}:/etc/munge/munge.key
+  become: yes
+  when: scp_key
+
 
 - name: Ensure munge key file is secure
   file:

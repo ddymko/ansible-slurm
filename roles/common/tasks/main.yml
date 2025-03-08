@@ -3,6 +3,8 @@
     name:
       - libpmix-dev
       - python3-mysqldb
+      - golang-go
+      - stress-ng
 #      - jq
     state: present
     update_cache: yes

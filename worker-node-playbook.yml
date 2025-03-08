@@ -1,0 +1,80 @@
+- name: Configure etc/hosts
+  hosts: all
+  become: yes
+  roles:
+    - role: etc-hosts
+
+
+- name: Ensure /etc/munge directory exists on worker nodes
+  hosts: workers
+  become: yes
+  tasks:
+    - name: Create /etc/munge directory if not present
+      file:
+        path: /etc/munge
+        state: directory
+        mode: '0755'
+
+- name: Push munge key from control-node to workers using SCP
+  hosts: control-node
+  tasks:
+    - name: Copy munge key to each worker node
+      command: scp -o StrictHostKeyChecking=no /etc/munge/munge.key root@{{ item }}:/etc/munge/munge.key
+      loop: "{{ groups['workers'] }}"
+      become: yes
+
+- name: Configure Munge on workers
+  hosts: workers
+  become: yes
+  roles:
+    - role: munge
+      vars:
+        create_key: false
+    - role: docker
+      vars:
+        perform_docker_setup: true
+        perform_prometheus_setup: false
+        perform_node_exporter_setup: true
+        perform_grafana_setup: false
+        perform_slurm_exporter_setup: false
+
+- name: Configure Slurm
+  hosts: all
+  become: yes
+  roles:
+    - role: slurmd
+
+- name: Configure Slurm
+  hosts: control-node
+  become: yes
+  roles:
+    - role: slurmd
+
+- name: Restart slurmd on target nodes using systemd
+  hosts: all       # Adjust this to your specific host group(s)
+  become: yes
+  tasks:
+    - name: Restart slurmd service with systemd
+      systemd:
+        name: slurmd
+        state: restarted
+
+- name: Restart slurmctld on target nodes using systemd
+  hosts: control-node       # Adjust this to your specific host group(s)
+  become: yes
+  tasks:
+    - name: Restart slrumctld service with systemd
+      systemd:
+        name: slurmctld
+        state: restarted
+  roles:
+    - role: docker
+      vars:
+        perform_docker_setup: true
+        perform_prometheus_setup: true
+        perform_node_exporter_setup: false
+        perform_grafana_setup: false
+        perform_slurm_exporter_setup: false
+
+
+

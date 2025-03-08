@@ -2,7 +2,9 @@
   hosts: control-node
   become: yes
   roles:
+    - ssh-key
 #    - common
+#    - conclave-backend
 #    - munge
 #    - mariadb
 #    - slurmdbd
@@ -10,7 +12,25 @@
 #    - slurmd
 #    - slurmrestd
 #    - nginx
-    - role: docker
-      vars:
-        perform_docker_setup: true
-        perform_node_exporter_setup: true
+#    - slurm-exporter
+#    - role: docker
+#      vars:
+#        perform_docker_setup: false
+#        perform_prometheus_setup: true
+#        perform_node_exporter_setup: false
+#        perform_grafana_setup: false
+#        perform_slurm_exporter_setup: false
+
+
+#- name: configure workers
+#  hosts: workers
+#  become: yes
+#  roles:
+#    - munge
+#    - slurmd
+#    - role: docker
+#      vars:
+#        perform_docker_setup: true
+#        perform_node_exporter_setup: true
+#        perform_prometheus_setup: false
+#        perform_grafana_setup: false

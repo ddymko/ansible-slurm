@@ -1,0 +1,23 @@
+- name: Ensure /root/.ssh directory exists
+  file:
+    path: /root/.ssh
+    state: directory
+    mode: '0700'
+    owner: root
+    group: root
+
+- name: Copy private key to /root/.ssh/id_rsa
+  copy:
+    src: files/private-key
+    dest: /root/.ssh/id_rsa
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Copy public key to /root/.ssh/id_rsa.pub
+  copy:
+    src: files/public-key
+    dest: /root/.ssh/id_rsa.pub
+    owner: root
+    group: root
+    mode: '0644'

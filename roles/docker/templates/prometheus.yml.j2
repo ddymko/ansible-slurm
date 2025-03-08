@@ -9,7 +9,9 @@ scrape_configs:
 
   - job_name: "node"
     static_configs:
-      - targets: ["smn01:9100", "swn02:9100", "swn03:9100", "swn04:9100"]
+      - targets: [{% for host in groups['all'] %}
+          "{{ hostvars[host].hostname | default(host) }}:9100"{% if not loop.last %}, {% endif %}{% endfor %}]
+
 
   - job_name: 'slurm-scraper'
     scrape_interval: 30s # For the best experience, this should be at least 2x POLL_LIMIT

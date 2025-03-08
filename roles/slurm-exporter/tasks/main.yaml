@@ -1,0 +1,9 @@
+- name: Install Prometheus Slurm Exporter
+  shell: "/usr/bin/go install github.com/rivosinc/prometheus-slurm-exporter@v1.6.10"
+  environment:
+    GOPATH: "{{ ansible_env.HOME }}/go"
+    PATH: "{{ ansible_env.HOME }}/go/bin:/usr/local/go/bin:{{ ansible_env.PATH }}"
+  args:
+    executable: /bin/bash
+  register: go_install_output
+  changed_when: "'no required module' not in go_install_output.stdout"

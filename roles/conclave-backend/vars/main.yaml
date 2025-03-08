@@ -1,0 +1,11 @@
+
+repo_url: "git@github.com:your_username/your_repository.git"
+# Directory where the repository will be cloned (source code location)
+source_dir: "/opt/conclave"
+# Final destination for the built binary
+binary_dest: "/usr/local/bin/conclave-backend"
+# Optional: path to your SSH private key if needed for cloning
+ssh_key_path: "/path/to/your/private_key"
+
+go_os: "{{ ansible_system | lower }}"
+go_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture | lower }}"

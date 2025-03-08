@@ -1,5 +1,5 @@
 ClusterName=HomeLab
-SlurmctldHost={{ ansible_hostname }}
+SlurmctldHost=smn01
 
 # AUTH
 AuthType=auth/munge
@@ -52,17 +52,16 @@ SelectTypeParameters=CR_Core
 
 # SLURMDBD ACCOUNTING
 AccountingStorageType=accounting_storage/slurmdbd
-AccountingStorageHost={{ ansible_hostname }}
+AccountingStorageHost=smn01
 AccountingStoreFlags=job_comment,job_env,job_script
 
 # GATHER JOB ACCOUNT DATA
 JobAcctGatherType=jobacct_gather/linux
 JobAcctGatherFrequency=30
 
-#  Node Definitions
-NodeName={{ ansible_hostname }} CPUs=4 RealMemory=3195 State=IDLE
-{#NodeName=slurm-test-worker CPUs=4 RealMemory=3195 State=IDLE#}
-{#NodeName=swn1 CPUs=1 RealMemory=1968 State=IDLE#}
-{#NodeName=swn2 CPUs=2 RealMemory=1967 State=IDLE#}
-{#NodeName=swn3 CPUs=4 RealMemory=3195 State=IDLE#}
+# Node Definitions
+{% for host in groups['all'] %}
+NodeName={{ hostvars[host].hostname | default(host) }} CPUs={{ hostvars[host].cpus | default(4) }} RealMemory={{ hostvars[host].realmemory | default(3195) }} State=IDLE
+{% endfor %}
+
 PartitionName=LocalQ Nodes=ALL Default=YES MaxTime=INFINITE State=UP

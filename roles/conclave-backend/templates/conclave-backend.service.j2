@@ -1,0 +1,12 @@
+[Unit]
+Description=Conclave Backend
+After=network.target
+
+[Service]
+User={{ service_user | default("root") }}
+WorkingDirectory={{ source_dir | default("/opt/myapp") }}
+ExecStart={{ binary_dest | default("/usr/local/bin/my_go_binary") }}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

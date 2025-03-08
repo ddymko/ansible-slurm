@@ -1,2 +1,12 @@
 [control-node]
-192.168.4.194
+smn01 ansible_host=192.168.4.194 hostname=smn01 cpus=4 realmemory=3195
+
+[workers]
+swn04 ansible_host=192.168.4.199 hostname=swn04 cpus=4 realmemory=3695
+swn05 ansible_host=192.168.4.135 hostname=swn05 cpus=4 realmemory=3695
+
+
+
+[boob]
+swn02 ansible_host=192.168.4.208 hostname=swn02 cpus=4 realmemory=3695
+swn03 ansible_host=192.168.4.178 hostname=swn03 cpus=4 realmemory=3695
