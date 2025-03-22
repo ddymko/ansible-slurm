@@ -1,5 +1,5 @@
 - name: Install Prometheus Slurm Exporter
-  shell: "/usr/bin/go install github.com/rivosinc/prometheus-slurm-exporter@v1.6.10"
+  shell: "/usr/bin/go install github.com/astappiev/slurm_exporter@v0.21.0"
   environment:
     GOPATH: "{{ ansible_env.HOME }}/go"
     PATH: "{{ ansible_env.HOME }}/go/bin:/usr/local/go/bin:{{ ansible_env.PATH }}"
@@ -7,3 +7,14 @@
     executable: /bin/bash
   register: go_install_output
   changed_when: "'no required module' not in go_install_output.stdout"
+
+- name: Template slurm systemd service file
+  template:
+    src: slurm-exporter.service.j2
+    dest: /etc/systemd/system/slurm-exporter.service
+    owner: root
+    group: root
+    mode: '0644'
+#  notify:
+#    - Reload systemd daemon
+#    - Restart Conclave Backend

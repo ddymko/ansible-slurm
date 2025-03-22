@@ -1,2 +1,2 @@
-url: "github.com/rivosinc/prometheus-slurm-exporter"
-version: "1.16.10"
+url: "github.com/astappiev/slurm_exporter"
+version: "0.21.0"

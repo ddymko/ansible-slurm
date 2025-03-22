@@ -1,11 +1,11 @@
 [Unit]
-Description=Conclave Backend
+Description=Slurm Exporter
 After=network.target
 
 [Service]
 User={{ service_user | default("root") }}
-WorkingDirectory={{ source_dir | default("/opt/slurm-exporter") }}
-ExecStart={{ binary_dest | default("/usr/local/bin/slurm-exporter") }}
+WorkingDirectory={{ source_dir | default("/root/go/bin") }}
+ExecStart={{ binary_dest | default("/root/go/bin/slurm_exporter") }}
 Restart=on-failure
 
 [Install]
